@@ -79,13 +79,14 @@
         methods: {
             clickCard: function(){
                 // this.is_open = true;
-                if(this.is_open===true){
+                if(this.is_open === true){
                     return;
                 }
+                // this.is_open = true;
                 this.$emit('clicked');
             },
-            closeCard: function(){
-                this.is_open = false;
+            cardFlipped: function(){
+                this.$emit('flipped');
             },
             checkCardInfo: function(){
                 //---- TODO: Pronounce
@@ -118,9 +119,10 @@
         timeout_id: 0,
         game_timer_id: null,
         is_debug: true,
+        speech_apis:[],
 
         cards: [],
-        question_sets:['ja_kana','fi'],
+        question_sets:['ja','fi'],
         questions: [
             {
                 title: 'test1',
@@ -128,8 +130,7 @@
                 back: '',
                 words: {
                     en: ['run'],
-                    ja_kana: ['はしる','hashiru'],
-                    ja_ch: ['走る','hashiru'],
+                    ja: ['はしる','走る','hashiru'],
                     de: ['rennen'],
                     fi: ['ajaa']
                 },
@@ -138,34 +139,46 @@
                 is_done: false
             },
             {
-            title: 'test2',
-            front: '?',
-            back: '',
-            words: {
-                en: ['eat'],
-                ja_kana: ['たべる','taberu'],
-                ja_ch: ['食べる','taberu'],
-                de:['essen'],
-                fi: ['syödä']
-            },
-            set: 0,
-            is_open: false,
-            is_done: false
+                title: 'test2',
+                front: '?',
+                back: '',
+                words: {
+                    en: ['eat'],
+                    ja: ['たべる','食べる','taberu'],
+                    de:['essen'],
+                    fi: ['syödä']
+                },
+                set: 0,
+                is_open: false,
+                is_done: false
             },
             {
-            title: 'test3',
-            front: '?',
-            back: '',
-            words: {
-                en: ['sleep'],
-                ja_kana: ['ねむる','nemuru'],
-                ja_ch: ['眠る','nemuru'],
-                de: ['schlafen'],
-                fi: ['nukkua']
+                title: 'test3',
+                front: '?',
+                back: '',
+                words: {
+                    en: ['sleep'],
+                    ja: ['ねむる','眠る','nemuru'],
+                    de: ['schlafen'],
+                    fi: ['nukkua']
+                },
+                set: 0,
+                is_open: false,
+                is_done: false
             },
-            set: 0,
-            is_open: false,
-            is_done: false
+            {
+                title: 'test4',
+                front: '?',
+                back: '',
+                words: {
+                    en: ['come'],
+                    ja: ['くる','来る','kuru'],
+                    de: ['kommen'],
+                    fi: ['tulla']
+                },
+                set: 0,
+                is_open: false,
+                is_done: false
             },
             ]
         },
@@ -190,15 +203,23 @@
                return false;
             },
             is_success: function(){
-                // if(this.completed_cards.length === this.cards.length) {
-                //     return true;
-                // }
-                // return false;
+                var answer = this.flipped_cards[0].serial;
+                return this.flipped_cards.every(function(card) {
+                    return (card.serial === answer);
+                });
             }
         },
         // Vue.js のインスタンスにはライフサイクルが定義されている
         //mounted : アプリがページにマウントされるタイミングでデータを読み込む
         mounted: function(){
+
+            for(var i=0; i < this.question_sets.length; i++){
+                var speech = new SpeechSynthesisUtterance();
+                speech.lang = `${this.question_sets[i]}-${this.question_sets[i].toUpperCase()}`;
+                speech.rate = 0.8;
+                this.speech_apis.push(speech);
+            };
+                
             var cnt = 0;
             // this.questions = JSON.parse(localStorage.getItem('questions')) || [];
             for(var i=0; i < this.questions.length; i++){
@@ -206,6 +227,7 @@
                 this.questions[i].serial = cnt;
                 for(var j=0; j < this.question_sets.length; j++){
                     this.questions[i].back = this.questions[i].words[this.question_sets[j]];
+                    this.questions[i].lang = this.question_sets[j];
                     console.log(this.questions[i].back);
                     this.cards.push(JSON.parse(JSON.stringify(this.questions[i])));
                 }
@@ -266,24 +288,13 @@
                     this.is_timer_running = true;
                     this.start_time = Date.now();
                     this.runTimer();
-                };
-                
-                _card.is_open = true;
-                if (this.flipped_cards.length === this.question_sets.length) {
-                    // if (this.first_card !== null && this.second_card !== null) {
-                    this.checkCards();
-                    return;
                 }
 
-                
-                // this.flipped_cards.length++;
-
-                // if (this.flipped_cards.length % 2 === 1) {
-                //     this.first_card = _card;
-                // } else {
-                //     this.second_card = _card;
-                //     this.checkCards(); 
-                // }
+                _card.is_open = true;
+                var lang_num = this.question_sets.indexOf(_card.lang);
+                var speech = this.speech_apis[lang_num];
+                speech.text = _card.back[0];
+                speechSynthesis.speak(speech);
             },
             closeCards: function(){
                 this.flipped_cards.forEach(function(card){
@@ -292,12 +303,12 @@
                 this.resetTrial();
             },
             resetTrial: function(){
-                // this.flipped_cards.length = 0;
-                // this.first_card = null;
-                // this.second_card = null;
+                
             },
             checkCards: function(){
-                // if(this.flipped_cards[0].serial === this.flipped_cards[1].serial){
+                if(this.flipped_cards.length != this.question_sets.length){
+                    return;
+                };
                 if(this.is_success){
                     //---- TODO: success action
                     console.log('Success');
@@ -314,11 +325,9 @@
                     this.resetTrial();
                 }else{
                     console.log('NG');
-                    //---- TODO: fail action
-                    var timer = setTimeout(function(){
-                        clearTimeout(timer);
-                        vm.closeCards();
-                    }, 2000);
+                    this.flipped_cards.forEach(function(card){
+                        card.is_open = false;
+                    });
                 }
             },
             runTimer: function() {

@@ -28,8 +28,8 @@
                 <!-- <div class="card-container" v-for="(card, index) in cards"> -->
                 <div class="" v-for="(card, index) in cards">
                     <!-- {{ index }} -->
-                    <card-component v-bind:back="card.back" v-bind:front="card.front" v-bind:is_open="card.is_open"
-                        @clicked="flipCard(card)"></card-component>
+                    <card-component v-bind:back="card.back" v-bind:front="card.front" v-bind:is_open="card.is_open" v-bind:is_done="card.is_done"
+                    @clicked="flipCard(card)" @flipped="checkCards()"></card-component>
 
                 </div>
                 <!-- </div>
@@ -45,13 +45,14 @@
             </div>
             <div id="debug_monitor" v-show="is_debug">
                 <p>Debug Monitor</p>
+                <hr>
                 <p>flipped_cards</p>
                 <div class="" v-for="(card, index) in flipped_cards">
                     {{card}}
                 </div>
                 <p>completed_cards</p>
                 <div class="" v-for="(word, index) in completed_cards">
-                    {{card}}
+                    {{word}}
                 </div>
             </div>
         </div>
@@ -66,9 +67,17 @@
 
     <script type="text/x-template" id="card-component">
         <div class="card-container">
-            <div class="card" @click="clickCard()" @transitionend="checkCardInfo()" v-bind:class="{open:is_open}"  >
-                <div class="card-front">
-                    {{ back[0] }}
+            <div class="card" :class="{open:is_open}" 
+            @click="clickCard()" @transitionend="cardFlipped()">
+                <div class="card-front" :class="{done:is_done}">
+                    <template v-for="(word, index) in back">
+                        <div v-if="index==0" class="main_word">
+                            {{ word }}
+                        </div>
+                        <div v-else class="sub_word">
+                            {{ word }}
+                        </div>
+                    </template>
                     <!-- <input type="checkbox" v-model="card.isDone">-->
                     <!-- <span :class="{done: card.isDone}">{{ card.title }}</span> -->
                     <!-- <like-component @increment="incrementTotal"></like-component> -->
@@ -76,7 +85,6 @@
                 </div>
                 <div class="card-back">
                     {{ front }}
-    
                 </div>
             </div>
         </div>
