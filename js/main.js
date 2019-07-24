@@ -24,7 +24,7 @@
 
 
     var wordComponent = Vue.extend({
-        template: '#word-component',
+        template: '#word_component',
         //---- カスタム属性
         props: {
             message: {
@@ -43,10 +43,11 @@
 
 
     var cardComponent = Vue.extend({
-        template: '#card-component',
+        template: '#card_component',
         data: function() {
             return {
                 count: 0,
+                is_bingo: false
             }
         },
         props: {
@@ -103,9 +104,9 @@
     var vm = new Vue({
         el: '#app',
         components: {
-            'like-component': likeComponent,
-            'ward-component': wordComponent,
-            'card-component': cardComponent
+            'like_component': likeComponent,
+            'ward_component': wordComponent,
+            'card_component': cardComponent
         },
         data: {
         title: 'My Cards',
@@ -118,10 +119,11 @@
         is_timer_running: false,
         timeout_id: 0,
         game_timer_id: null,
-        is_debug: true,
+        is_debug: false,
         speech_apis:[],
 
         cards: [],
+        // question_sets:['ja','fi','de'],
         question_sets:['ja','fi'],
         questions: [
             {
@@ -131,11 +133,12 @@
                 words: {
                     en: ['run'],
                     ja: ['はしる','走る','hashiru'],
-                    de: ['rennen'],
-                    fi: ['ajaa']
+                    de: ['rennen','renne','rennst','rennt'],
+                    fi: ['juosta','juoksen','juokset','jouksi']
                 },
                 set: 0,
                 is_open: false,
+                is_success: false,
                 is_done: false
             },
             {
@@ -145,11 +148,12 @@
                 words: {
                     en: ['eat'],
                     ja: ['たべる','食べる','taberu'],
-                    de:['essen'],
-                    fi: ['syödä']
+                    de:['essen','esse','isst','ißt/isst'],
+                    fi: ['syödä','syön','syöt','syö']
                 },
                 set: 0,
                 is_open: false,
+                is_success: false,
                 is_done: false
             },
             {
@@ -159,11 +163,12 @@
                 words: {
                     en: ['sleep'],
                     ja: ['ねむる','眠る','nemuru'],
-                    de: ['schlafen'],
-                    fi: ['nukkua']
+                    de: ['schlafen','schlafe','schläfst','schläft'],
+                    fi: ['nukkua','nukun','nukut','nukkuu']
                 },
                 set: 0,
                 is_open: false,
+                is_success: false,
                 is_done: false
             },
             {
@@ -173,8 +178,8 @@
                 words: {
                     en: ['come'],
                     ja: ['くる','来る','kuru'],
-                    de: ['kommen'],
-                    fi: ['tulla']
+                    de: ['kommen','komme','kommst','kommt'],
+                    fi: ['tulla','tule','tulet','tulee']
                 },
                 set: 0,
                 is_open: false,
@@ -196,18 +201,24 @@
                 });
                 return items; 
             },
-            is_game_completed: function(){
-               if(this.completed_cards.length === this.cards.length) {
-                   return true;
-               }
-               return false;
+            bingo_cards: function(){
+                var items = this.cards.filter(function(card) {
+                    return card.is_bingo;
+                });
+                return items; 
             },
             is_success: function(){
                 var answer = this.flipped_cards[0].serial;
                 return this.flipped_cards.every(function(card) {
                     return (card.serial === answer);
                 });
-            }
+            },
+            is_game_completed: function(){
+                if(this.completed_cards.length === this.cards.length) {
+                    return true;
+                }
+                return false;
+             },
         },
         // Vue.js のインスタンスにはライフサイクルが定義されている
         //mounted : アプリがページにマウントされるタイミングでデータを読み込む
@@ -302,32 +313,39 @@
                 });
                 this.resetTrial();
             },
-            resetTrial: function(){
-                
+            nextTrial: function(){
+                this.flipped_cards.forEach(function(card){
+                    card.is_done = true;
+                });
+                if(this.is_game_completed){
+                    this.finishGame();
+                    return;
+                }
+            },
+            failTrial:function(){
+                this.flipped_cards.forEach(function(card){
+                    card.is_open = false;
+                    card.is_done = false;
+                });
             },
             checkCards: function(){
-                if(this.flipped_cards.length != this.question_sets.length){
+                if(this.flipped_cards.length <= 1){
                     return;
                 };
+
                 if(this.is_success){
-                    //---- TODO: success action
                     console.log('Success');
-                    this.flipped_cards.forEach(function(card){
-                        card.is_done = true;
-                    })
-                    console.log(this.completed_cards);
-                    
-                    if(this.is_game_completed){
-                        this.finishGame();
-                        return;
-                    }
+                    this.flipped_cards.forEach(function(card,index){
+                        card.is_bingo = true;
+                        if(index === vm.question_sets.length-1){
+                            vm.nextTrial();
+                        };
+                    });
                     //---- TODO: Show Picture
-                    this.resetTrial();
+                    //---- TODO: sound Effect
                 }else{
                     console.log('NG');
-                    this.flipped_cards.forEach(function(card){
-                        card.is_open = false;
-                    });
+                    this.failTrial();
                 }
             },
             runTimer: function() {

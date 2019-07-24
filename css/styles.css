@@ -21,6 +21,7 @@ body {
   text-align: center;
   border-bottom: 1px solid #ddd;
   padding: 16px 0;
+  color: #fff;
 }
 
 
@@ -58,7 +59,7 @@ body {
   float: right;
 } */
 
-.card-container {
+.card_container {
   /* small value -> big action */
   perspective: 300px;
   width: 100px;
@@ -74,15 +75,14 @@ body {
   position: relative;
   /* .card と同じ空間で .card の子要素を回転させる */
   transform-style: preserve-3d;
-  
 }
 
 .card.open {
   transform: rotateY(180deg);
 }
 
-.card-front.done{
-  background: #deffdf;
+.card_front.done{
+  background: #eee;
   color: #3498db;
 }
 
@@ -91,14 +91,13 @@ body {
   transform: rotateY(180deg);
 }
 
-.card-front,
-.card-back {
+.card_front,
+.card_back {
   width: 100%;
   height: 100%;
   text-align: center;
-  line-height: 70px;
   border-radius: 8px;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
   position: absolute;
   top: 0;
   left: 0;
@@ -106,33 +105,45 @@ body {
   backface-visibility: hidden;
 }
 
-.card-back {
+.card_back {
   background: #f1c40f;
   color: #fff;
+  font-size: 20px;
 }
 
-.card-front {
+.card_back .card_back_text{
+  padding: 20px 5px;
+}
+
+.card_front {
   background: #fff;
   color: #3498db;
   transform: rotateY(180deg);
 }
 
-.card-front .main_word{
-  
+.card_front .main_word{
+  padding: 20px 5px;
 }
 
-.card-front .sub_word{
-  margin-top: 5px;
+.card_front .sub_word{
+  width: 80%;
+  /* border-top: #999 solid 1px; */
+  margin: 0 auto 0 auto;
+  padding: 4px 2px;
   color: #555;
+  background: #EEE;
   line-height: normal;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: normal;
 }
+
 
 #game_time {
   font-size: 20px;
   color: #fff;
   text-align: right;
   margin: 0 5px 10px 0;
+  text-align: center;
 }
 
 #restart {
@@ -146,14 +157,15 @@ body {
   text-align: center;
   font-size: 18px;
   margin-top: 15px;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 #restart.inactive {
   cursor: default;
-  opacity: 0.4;
-  box-shadow: none;
-  margin-top: 20px;
+  opacity: 0.7;
+  background: #555;
+  /* box-shadow: none; */
+  /* margin-top: 20px; */
 }
 
 #debug_monitor{
