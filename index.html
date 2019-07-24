@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Vue App</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="app" class="container">
+
+        <h1>{{ title.toUpperCase() }}</h1>
+        <a href="" id="restart" v-bind:class="{ inactive:game_time==0 }" >RESTART</a>
+        <!-- <span class="info">{{ remaining.length }}/{{ cards.length }}</span> -->
+        <!-- <button @click="purge">Purge</button> -->
+        <!-- <p>
+        <input type="text" v-model="title">
+      </p> -->
+        <!-- <p>Total Likes: {{ total }}</p> -->
+        <!-- <star-component ></star-component> -->
+        <!-- <star-component message="star++"></star-component> -->
+        <!-- <star-component message="star+++"></star-component> -->
+        <div class="container">
+            <div id="game_time">{{game_time}}</div>
+            <div id="stage">
+                <!-- <div class="" v-if="cards.length"> -->
+                <!-- <div class="card-container" v-for="(card, index) in cards"> -->
+                <div class="" v-for="(card, index) in cards">
+                    <!-- {{ index }} -->
+                    <card-component v-bind:back="card.back" v-bind:front="card.front" v-bind:is_open="card.is_open"
+                        @clicked="flipCard(card)"></card-component>
+
+                </div>
+                <!-- </div>
+        <div v-else>
+          <p>Nothing to do :)</p>
+        </div> -->
+            </div>
+            <div id="result">
+                <!-- <div class="" v-for="(word, index) in completed_cards">
+                    {{index}}
+                    <word-component v-bind:back="word.back" v-bind:front="word.front"></word-component> 
+                </div> -->
+            </div>
+            <div id="debug_monitor" v-show="is_debug">
+                <p>Debug Monitor</p>
+                <p>flipped_cards</p>
+                <div class="" v-for="(card, index) in flipped_cards">
+                    {{card}}
+                </div>
+                <p>completed_cards</p>
+                <div class="" v-for="(word, index) in completed_cards">
+                    {{card}}
+                </div>
+            </div>
+        </div>
+        <!--//// container  -->
+
+        <!-- <form @submit.prevent="addItem">
+        <input type="text" v-model="new_item">
+        <input type="submit" value="Add">
+      </form> -->
+
+    </div>
+
+    <script type="text/x-template" id="card-component">
+        <div class="card-container">
+            <div class="card" @click="clickCard()" @transitionend="checkCardInfo()" v-bind:class="{open:is_open}"  >
+                <div class="card-front">
+                    {{ back[0] }}
+                    <!-- <input type="checkbox" v-model="card.isDone">-->
+                    <!-- <span :class="{done: card.isDone}">{{ card.title }}</span> -->
+                    <!-- <like-component @increment="incrementTotal"></like-component> -->
+                    <!--<span @click="deleteItem(index)" class="command">[x]</span> -->
+                </div>
+                <div class="card-back">
+                    {{ front }}
+    
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="word-component">
+        <div class="word-container">
+        <div class="word">
+          <div class="card-front">
+            {{ back[0] }}
+
+            <!-- <input type="checkbox" v-model="card.isDone">-->
+            <!-- <span :class="{done: card.isDone}">{{ card.title }}</span> -->
+            <!-- <like-component @increment="incrementTotal"></like-component> -->
+            <!--<span @click="deleteItem(index)" class="command">[x]</span> -->
+          </div>
+          <div class="card-back">
+            {{ front }}
+            <!-- {{ is_open }} -->
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
