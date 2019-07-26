@@ -40,8 +40,8 @@
                     <div class="pannel" :class="q">
                         <template  v-for="(card, index) in cards">
                           <template v-if="card.lang == q ">
-                            <card_component :back="card.back" :front="card.front" :lang="card.lang"
-                            :is_open="card.is_open" :is_done="card.is_done" :is_selected="card.is_selected"
+                            <card_component :back="card.back" :front="card.front" :lang="card.lang" :stage_level="stage_level"
+                            :is_open="card.is_open" :is_done="card.is_done" :is_selected="card.is_selected" :is_active="card.is_active"
                             @clicked="flipCard(card)" @flipped="checkCards()"></card_component>
                           </template>
                         </template>
@@ -51,7 +51,8 @@
             <div id="stage" v-else>
               <div class="pannel">
                 <template class="" v-for="(card, index) in cards">
-                    <card_component :back="card.back" :front="card.front" :is_open="card.is_open" :is_done="card.is_done" :lang="card.lang" :stage_level="stage_level"
+                    <card_component :back="card.back" :front="card.front" :lang="card.lang" :stage_level="stage_level"
+                    :is_open="card.is_open" :is_done="card.is_done" :is_selected="card.is_selected" :is_active="card.is_active"
                     @clicked="flipCard(card)" @flipped="checkCards()"></card_component>
                 </template>
               </div>
@@ -85,7 +86,7 @@
 
     <script type="text/x-template" id="card_component">
         <div class="card_container">
-            <div class="card" :class="{'open':is_open}" @click="clickCard()" @transitionend="cardFlipped()">
+            <div class="card" :class="{'open':is_open, inactive:!is_active }" @click="clickCard()" @transitionend="cardFlipped()">
                 <div class="card_front" :class="{done:is_done, selected:is_selected }">
                     <i class="flag-icon" :class="{[flag_name]:true}"></i>
                     <template v-for="(word, index) in back">

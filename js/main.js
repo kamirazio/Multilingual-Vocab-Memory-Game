@@ -1,4 +1,4 @@
-(function() {
+// (function() {
     'use strict';
 
     //---- two way data binding (to UI)
@@ -79,8 +79,12 @@
             }
         },
         props: {
-            serial: null,
-            stage_level: null,
+            serial:{
+                default: 0
+            },
+            stage_level:{
+                default: 0
+            },
             answer:{
                 type: String,
                 default: ''
@@ -93,11 +97,22 @@
               type: String,
               default: ''
             },
-            lang: 'gb',
-            is_open: false,
-            is_done: false,
-            is_active: false,
-            is_selected: false,
+            lang:{
+              type: String,
+              default: ''
+            },
+            is_open:{
+                default: false
+            },
+            is_done:{
+                default: false
+            },
+            is_active:{
+                default: false
+            },
+            is_selected:{
+                default: false
+            },
         },
         computed: {
             flag_name: function(){
@@ -149,11 +164,12 @@
           game_timer_id: null,
 
           is_debug: false,
+          sound_vol: 1,
           speech_apis:[],
 
           cards: [],
-          question_sets:['ja','fi','de'],
-          // question_sets:['ja','fi'],
+          // question_sets:['ja','fi','de'],
+          question_sets:['ja','fi'],
           questions: [
                 {
                     title: 'test1',
@@ -220,14 +236,14 @@
                 return items;
             },
             flipped_cards: function(){
-                if(this.stage_level == 1){
-                  var items = this.cards.filter(function(card) {
+                if(this.stage_level == 0 || this.stage_level == 1){
+                    var items = this.cards.filter(function(card) {
                       return card.is_selected;
-                  });
+                    });
                 }else{
-                  var items = this.cards.filter(function(card) {
+                    var items = this.cards.filter(function(card) {
                       return card.is_open && !card.is_done;
-                  });
+                    });
                 }
                 return items;
             },
@@ -235,6 +251,36 @@
                 var items = this.cards.filter(function(card) {
                     return card.is_bingo;
                 });
+                return items;
+            },
+            activated_cards: function(){
+                if(this.flipped_cards.length > 0){
+                    if(this.stage_level == 0 || this.stage_level == 4){
+                    //---- the case with existing of selected card
+                    var selected_serial = this.flipped_cards[0].serial;
+                    //---- only selectable the cards with same meaning
+                        var items = this.cards.filter(function(card){
+                          return card.serial == selected_serial && !card.is_done;
+                        });
+                    }else if(this.stage_level == 1 || this.stage_level == 2){
+                        var selected_langs = [];
+                        for(var i=0; i < this.flipped_cards.length; i++){
+                            selected_langs.push(this.flipped_cards[i].lang);
+                        };
+                        //---- only selectable the cards in other languages
+                        var items = this.cards.filter(function(card){
+                          return !selected_langs.includes(card.lang) && !card.is_done;
+                        });
+                    }else{
+                        var items = this.cards.filter(function(card){
+                          return !card.is_done;
+                        });
+                    }
+                }else{
+                    var items = this.cards.filter(function(card){
+                      return !card.is_done;
+                    });
+                }
                 return items;
             },
             is_success: function(){
@@ -280,35 +326,33 @@
         },
         methods: {
             initStage: function(){
+                //--- init timer
+                this.is_timer_running = false;
+                this.game_time = 0;
+                clearTimeout(this.game_timer_id);
+                this.cards = [];
+                var cnt = 0; //---- for create serial number
 
-              this.is_timer_running = false;
-              this.game_time = 0;
-              clearTimeout(this.game_timer_id);
+                // this.questions = JSON.parse(localStorage.getItem('questions')) || [];
+                for(var i=0; i < this.questions.length; i++){
+                    console.log(i);
+                    this.questions[i].serial = cnt;
+                    for(var j=0; j < this.question_sets.length; j++){
+                          this.questions[i].back = this.questions[i].words[this.question_sets[j]];
+                          this.questions[i].lang = this.question_sets[j];
+                          this.questions[i].is_open = false;
+                          this.questions[i].is_done = false;
+                          this.questions[i].is_active = true;
+                          this.questions[i].is_selected = false;
+                          this.customizeCard(i);
 
-              this.cards = [];
-              //---- create serial number
-              var cnt = 0;
-
-              // this.questions = JSON.parse(localStorage.getItem('questions')) || [];
-              for(var i=0; i < this.questions.length; i++){
-                  console.log(i);
-                  this.questions[i].serial = cnt;
-                  for(var j=0; j < this.question_sets.length; j++){
-                      this.questions[i].back = this.questions[i].words[this.question_sets[j]];
-                      this.questions[i].lang = this.question_sets[j];
-                      this.questions[i].is_open = false;
-                      this.questions[i].is_done = false;
-                      this.questions[i].is_active = true;
-                      this.questions[i].is_selected = false;
-                      this.customizeCard(i);
-
-                      this.cards.push(JSON.parse(JSON.stringify(this.questions[i])));
-                  } ////---- for
-                  cnt++;
-              }; ////---- for
-              // console.log(this.cards);
-              // this.cards = this.shuffle(this.cards);
-              this.customizeGame();
+                          this.cards.push(JSON.parse(JSON.stringify(this.questions[i])));
+                    } ////---- for
+                    cnt++;
+                }; ////---- for
+                // console.log(this.cards);
+                // this.cards = this.shuffle(this.cards);
+                this.customizeGame();
             },
             customizeCard: function(_q_index){
               switch (this.stage_level) {
@@ -405,6 +449,12 @@
             //     this.cards = this.remaining;
             // },
             flipCard: function(_card) {
+                if(this.sound_vol){
+                    this.speekUp(_card.back[0], _card.lang);
+                }
+                if(_card.is_active == false){
+                    return;
+                }
                 //---- Set Game timer
                 if(this.is_timer_running === false){
                     this.is_timer_running = true;
@@ -413,15 +463,21 @@
                 }
 
                 if(_card.is_open === false){
-
-                  _card.is_open = true;
+                    _card.is_open = true;
                 }
 
                 _card.is_selected = true;
-                this.speekUp(_card.back[0], _card.lang);
-                if(this.stage_level==1){
-                  this.checkCards();
+                if(this.stage_level==0 || this.stage_level==1){
+                    this.checkCards();
                 }
+            },
+            activateCards: function(){
+                this.cards.forEach(function(_card){
+                    _card.is_active = false;
+                });
+                this.activated_cards.forEach(function(_card){
+                    _card.is_active = true;
+                });
             },
             speekUp: function(_word,_lang){
                 var lang_num = this.question_sets.indexOf(_lang);
@@ -445,22 +501,23 @@
                     this.finishStage();
                     return;
                 }
+                this.activateCards();
             },
             failTrial:function(){
                 this.flipped_cards.forEach(function(card){
-                    if(vm.stage_level != 1){
+                    if(vm.stage_level != 0 && vm.stage_level != 1){
                         card.is_open = false;
                     }
-
                     card.is_selected = false;
                     card.is_done = false;
                 });
+                this.activateCards();
             },
             checkCards: function(){
+                this.activateCards();
                 if(this.flipped_cards.length <= 1){
                     return;
                 };
-
                 if(this.is_success){
                     console.log('Success');
                     this.flipped_cards.forEach(function(card,index){
@@ -486,4 +543,4 @@
 
     }); ////---- vue object
 
-})();
+// })();

@@ -117,21 +117,33 @@ body {
   box-sizing: border-box;
 }
 
+.inactive .card_front{
+  background: #ccc;
+  border: 3px solid #ccc;
+  box-sizing: border-box;
+}
+
 .card_front.done{
   border: 3px solid #ffb7b7;
   box-sizing: border-box;
-  color: #3498db;
+  background: #ffb7b7;
+  color: #fff;
 }
 
 .card_front.selected{
   border: 3px solid #2ecc71;
   box-sizing: border-box;
+  background: #fff;
 }
 
 .card_back {
   background: #f1c40f;
   color: #fff;
   font-size: 20px;
+}
+
+.inactive .card_back{
+  background: #c6a10b;
 }
 
 .card_back .card_back_text{
@@ -158,6 +170,11 @@ body {
   line-height: normal;
   font-size: 12px;
   font-weight: normal;
+}
+
+.card_front.done .sub_word{
+  background: #ffb7b7;
+  color #fff;
 }
 
 .card_front .flag-icon{
