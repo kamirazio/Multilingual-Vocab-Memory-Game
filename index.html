@@ -2,45 +2,64 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
+
     <title>My Vue App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/2.9.0/css/flag-icon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+
 </head>
-
 <body>
-    <div id="app" class="container">
+    <div id="header">TANGO</div>
 
+    <div id="app" class="container">
         <h1>{{ title.toUpperCase() }}</h1>
-        <a href="" id="restart" v-bind:class="{ inactive:game_time==0 }" >RESTART</a>
+        <!-- <h2>{{ stage.toUpperCase() }}</h2> -->
+
+        <div id="stage_btns">
+          <template v-for="(stage, index) in stages">
+            <stage_btn_component :index="index" :stage_name="stage" @clicked="changeStage(index)"></stage_btn_component>
+          </template>
+        </div>
+
+        <div id="restart_btn" :class="{ inactive:game_time==0 }" @click="resetStage()" > RESTART </div>
+
         <!-- <span class="info">{{ remaining.length }}/{{ cards.length }}</span> -->
         <!-- <button @click="purge">Purge</button> -->
         <!-- <p>
         <input type="text" v-model="title">
       </p> -->
-        <!-- <p>Total Likes: {{ total }}</p> -->
-        <!-- <star-component ></star-component> -->
-        <!-- <star-component message="star++"></star-component> -->
-        <!-- <star-component message="star+++"></star-component> -->
         <div class="container">
             <div id="game_time">{{game_time}}</div>
-            <div id="stage">
-                <!-- <div class="" v-if="cards.length"> -->
-                <!-- <div class="card_container" v-for="(card, index) in cards"> -->
-                <div class="" v-for="(card, index) in cards">
-                    <!-- {{ index }} -->
-                    <card_component v-bind:back="card.back" v-bind:front="card.front" v-bind:is_open="card.is_open" v-bind:is_done="card.is_done"
+            <div id="stage" v-if="stage_level!=3" >
+                <template v-for="(q, index) in question_sets">
+                    <!-- <div>  {{ q.toUpperCase() }} </div> -->
+                    <div class="pannel" :class="q">
+                        <template  v-for="(card, index) in cards">
+                          <template v-if="card.lang == q ">
+                            <card_component :back="card.back" :front="card.front" :lang="card.lang"
+                            :is_open="card.is_open" :is_done="card.is_done" :is_selected="card.is_selected"
+                            @clicked="flipCard(card)" @flipped="checkCards()"></card_component>
+                          </template>
+                        </template>
+                    </div>
+                </template>
+            </div>
+            <div id="stage" v-else>
+              <div class="pannel">
+                <template class="" v-for="(card, index) in cards">
+                    <card_component :back="card.back" :front="card.front" :is_open="card.is_open" :is_done="card.is_done" :lang="card.lang" :stage_level="stage_level"
                     @clicked="flipCard(card)" @flipped="checkCards()"></card_component>
-
-                </div>
-                <!-- </div>
-        <div v-else>
-          <p>Nothing to do :)</p>
-        </div> -->
+                </template>
+              </div>
             </div>
             <div id="result">
                 <!-- <div class="" v-for="(word, index) in completed_cards">
                     {{index}}
-                    <word-component v-bind:back="word.back" v-bind:front="word.front"></word-component> 
+                    <word-component v-bind:back="word.back" v-bind:front="word.front"></word-component>
                 </div> -->
             </div>
             <div id="debug_monitor" v-show="is_debug">
@@ -55,8 +74,7 @@
                     {{word}}
                 </div>
             </div>
-        </div>
-        <!--//// container  -->
+        </div><!--//// container  -->
 
         <!-- <form @submit.prevent="addItem">
         <input type="text" v-model="new_item">
@@ -67,9 +85,9 @@
 
     <script type="text/x-template" id="card_component">
         <div class="card_container">
-            <div class="card" :class="{open:is_open}" 
-            @click="clickCard()" @transitionend="cardFlipped()">
-                <div class="card_front" :class="{done:is_done}">
+            <div class="card" :class="{'open':is_open}" @click="clickCard()" @transitionend="cardFlipped()">
+                <div class="card_front" :class="{done:is_done, selected:is_selected }">
+                    <i class="flag-icon" :class="{[flag_name]:true}"></i>
                     <template v-for="(word, index) in back">
                         <div v-if="index==0" class="main_word">
                             {{ word }}
@@ -79,38 +97,51 @@
                         </div>
                     </template>
                     <!-- <input type="checkbox" v-model="card.isDone">-->
-                    <!-- <span :class="{done: card.isDone}">{{ card.title }}</span> -->
+                    <!-- <span >{{ card.title }}</span> -->
                     <!-- <like-component @increment="incrementTotal"></like-component> -->
                     <!--<span @click="deleteItem(index)" class="command">[x]</span> -->
                 </div>
                 <div class="card_back">
-                    <div class="card_back_text">{{ front }}</div>
+                    <template v-if="stage_level==3">
+                      <div class="card_back_text">{{ front }}</div>
+                    </template>
+                    <template v-else>
+                      <i class="flag-icon" :class="{[flag_name]:true}"></i>
+                      <!-- <div class="card_back_text">{{ front }}</div> -->
+                    </template>
                 </div>
             </div>
         </div>
     </script>
 
-    <script type="text/x-template" id="word-component">
-        <div class="word-container">
-        <div class="word">
-          <div class="card_front">
-            {{ back[0] }}
+    <!-- <script type="text/x-template" id="word-component"> -->
+        <!-- <div class="word-container"> -->
+        <!-- <div class="word"> -->
+          <!-- <div class="card_front"> -->
+            <!-- {{ back[0] }} -->
 
             <!-- <input type="checkbox" v-model="card.isDone">-->
             <!-- <span :class="{done: card.isDone}">{{ card.title }}</span> -->
             <!-- <like-component @increment="incrementTotal"></like-component> -->
             <!--<span @click="deleteItem(index)" class="command">[x]</span> -->
-          </div>
-          <div class="card_back">
-            {{ front }}
-            <!-- {{ is_open }} -->
-          </div>
-        </div>
-      </div>
-    </script>
+          <!-- </div> -->
+          <!-- <div class="card_back"> -->
+            <!-- {{ front }} -->
+
+          <!-- </div> -->
+        <!-- </div> -->
+      <!-- </div> -->
+    <!-- </script> -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="js/main.js"></script>
+
 </body>
 
 </html>

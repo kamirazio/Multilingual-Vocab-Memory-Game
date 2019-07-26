@@ -8,16 +8,40 @@
 
     var likeComponent = Vue.extend({
      //---- Componentのdata は、関数で返しさなければならない
-     data: function() {
+        data: function() {
             return {
                 count: 0
             }
+        },
+        props: {
+            index: null
         },
         template: '<button @click="countUp">Like {{ count }}</button>',
         methods: {
                 countUp: function() {
                 this.count++;
                 this.$emit('increment',this);
+            }
+        }
+    });
+
+    var stageBtnComponent = Vue.extend({
+        data: function() {
+            return {
+                index: null
+            }
+        },
+        props: {
+            index: null,
+            stage_name:{
+              type: String,
+              default: ''
+            }
+        },
+        template: '<div class="stage_btn" @click="clickBtn()" > {{ index }} : {{ stage_name.toUpperCase() }} </div>',
+        methods: {
+            clickBtn: function() {
+                this.$emit('clicked');
             }
         }
     });
@@ -47,43 +71,46 @@
         data: function() {
             return {
                 count: 0,
-                is_bingo: false
+                is_bingo: false,
+                is_open: false,
+                is_done: false,
+                is_active: false,
+                is_selected: false,
             }
         },
         props: {
             serial: null,
+            stage_level: null,
             answer:{
                 type: String,
                 default: ''
             },
             front:{
-            type: String,
-            default: ''
+              type: String,
+              default: ''
             },
             back:{
-            type: String,
-            default: ''
+              type: String,
+              default: ''
             },
+            lang: 'gb',
             is_open: false,
             is_done: false,
+            is_active: false,
+            is_selected: false,
         },
-        // transitions: {
-        //     'card': {
-        //         enter(el) {
-        //             console.log('enter');
-        //         },
-        //         leave(el, done) {
-        //             console.log('enter');
-        //         }
-        //     }
-        // },
+        computed: {
+            flag_name: function(){
+              if(this.lang == 'en'){
+                this.lang = 'gb';
+              }else if(this.lang == 'ja'){
+                this.lang = 'jp'
+              }
+              return 'flag-icon-' + this.lang;
+            }
+        },
         methods: {
             clickCard: function(){
-                // this.is_open = true;
-                if(this.is_open === true){
-                    return;
-                }
-                // this.is_open = true;
                 this.$emit('clicked');
             },
             cardFlipped: function(){
@@ -97,7 +124,6 @@
         }
     });
 
-
     //---- Vue Object
     //-------------------------------------------------------------------//
 
@@ -106,86 +132,84 @@
         components: {
             'like_component': likeComponent,
             'ward_component': wordComponent,
+            'stage_btn_component': stageBtnComponent,
             'card_component': cardComponent
         },
         data: {
-        title: 'My Cards',
-        new_item: '',
-        language: 'en',
+          title: 'my test',
+          new_item: '',
+          language: 'en',
+          stage_level: 0,
+          stages: ['preparation','open','close','close_random','anki'],
 
-        // is_game_completed: false,
-        start_time: null,
-        game_time: 0,
-        is_timer_running: false,
-        timeout_id: 0,
-        game_timer_id: null,
-        is_debug: false,
-        speech_apis:[],
+          start_time: null,
+          game_time: 0,
+          is_timer_running: false,
+          timeout_id: 0,
+          game_timer_id: null,
 
-        cards: [],
-        // question_sets:['ja','fi','de'],
-        question_sets:['ja','fi'],
-        questions: [
-            {
-                title: 'test1',
-                front: '?',
-                back: '',
-                words: {
-                    en: ['run'],
-                    ja: ['はしる','走る','hashiru'],
-                    de: ['rennen','renne','rennst','rennt'],
-                    fi: ['juosta','juoksen','juokset','jouksi']
+          is_debug: false,
+          speech_apis:[],
+
+          cards: [],
+          question_sets:['ja','fi','de'],
+          // question_sets:['ja','fi'],
+          questions: [
+                {
+                    title: 'test1',
+                    words: {
+                        en: ['run'],
+                        ja: ['はしる','走る','hashiru'],
+                        de: ['rennen','renne','rennst','rennt'],
+                        fi: ['juosta','juoksen','juokset','jouksi']
+                    }
                 },
-                set: 0,
-                is_open: false,
-                is_success: false,
-                is_done: false
-            },
-            {
-                title: 'test2',
-                front: '?',
-                back: '',
-                words: {
-                    en: ['eat'],
-                    ja: ['たべる','食べる','taberu'],
-                    de:['essen','esse','isst','ißt/isst'],
-                    fi: ['syödä','syön','syöt','syö']
+                {
+                    title: 'test2',
+                    words: {
+                        en: ['eat'],
+                        ja: ['たべる','食べる','taberu'],
+                        de:['essen','esse','isst','ißt/isst'],
+                        fi: ['syödä','syön','syöt','syö']
+                    }
                 },
-                set: 0,
-                is_open: false,
-                is_success: false,
-                is_done: false
-            },
-            {
-                title: 'test3',
-                front: '?',
-                back: '',
-                words: {
-                    en: ['sleep'],
-                    ja: ['ねむる','眠る','nemuru'],
-                    de: ['schlafen','schlafe','schläfst','schläft'],
-                    fi: ['nukkua','nukun','nukut','nukkuu']
+                {
+                    title: 'test3',
+                    words: {
+                        en: ['sleep'],
+                        ja: ['ねむる','眠る','nemuru'],
+                        de: ['schlafen','schlafe','schläfst','schläft'],
+                        fi: ['nukkua','nukun','nukut','nukkuu']
+                    }
                 },
-                set: 0,
-                is_open: false,
-                is_success: false,
-                is_done: false
-            },
-            {
-                title: 'test4',
-                front: '?',
-                back: '',
-                words: {
-                    en: ['come'],
-                    ja: ['くる','来る','kuru'],
-                    de: ['kommen','komme','kommst','kommt'],
-                    fi: ['tulla','tule','tulet','tulee']
+                {
+                    title: 'test4',
+                    words: {
+                        en: ['come'],
+                        ja: ['くる','来る','kuru'],
+                        de: ['kommen','komme','kommst','kommt'],
+                        fi: ['tulla','tule','tulet','tulee']
+                    }
                 },
-                set: 0,
-                is_open: false,
-                is_done: false
-            },
-            ]
+                {
+                    title: 'test5',
+                    words: {
+                        en: ['say'],
+                        ja: ['いう','言う','iu'],
+                        de: ['sagen','sage','sagst','sagt'],
+                        fi: ['sanoa','sanon','sanot','sanoo']
+                    }
+                },
+                {
+                    title: 'test6',
+                    words: {
+                        en: ['know'],
+                        ja: ['しる','知る','shiru'],
+                        de:['wissen','weiß','weißt','weiß'],
+                        fi: ['tietää','tiedän','tiedät','tietää']
+                    }
+                },
+              ]
         },
         //データから動的にプロパティ値を計算してくれる算出プロパティ
         computed:{
@@ -196,16 +220,22 @@
                 return items;
             },
             flipped_cards: function(){
-                var items = this.cards.filter(function(card) {
-                    return card.is_open && !card.is_done;
-                });
-                return items; 
+                if(this.stage_level == 1){
+                  var items = this.cards.filter(function(card) {
+                      return card.is_selected;
+                  });
+                }else{
+                  var items = this.cards.filter(function(card) {
+                      return card.is_open && !card.is_done;
+                  });
+                }
+                return items;
             },
             bingo_cards: function(){
                 var items = this.cards.filter(function(card) {
                     return card.is_bingo;
                 });
-                return items; 
+                return items;
             },
             is_success: function(){
                 var answer = this.flipped_cards[0].serial;
@@ -219,33 +249,21 @@
                 }
                 return false;
              },
+             current_stage: function(){
+               return this.stages[this.stage_level];
+             }
         },
         // Vue.js のインスタンスにはライフサイクルが定義されている
         //mounted : アプリがページにマウントされるタイミングでデータを読み込む
         mounted: function(){
-
+            //---- create voice api object
             for(var i=0; i < this.question_sets.length; i++){
                 var speech = new SpeechSynthesisUtterance();
                 speech.lang = `${this.question_sets[i]}-${this.question_sets[i].toUpperCase()}`;
                 speech.rate = 0.8;
                 this.speech_apis.push(speech);
             };
-                
-            var cnt = 0;
-            // this.questions = JSON.parse(localStorage.getItem('questions')) || [];
-            for(var i=0; i < this.questions.length; i++){
-                console.log(i);
-                this.questions[i].serial = cnt;
-                for(var j=0; j < this.question_sets.length; j++){
-                    this.questions[i].back = this.questions[i].words[this.question_sets[j]];
-                    this.questions[i].lang = this.question_sets[j];
-                    console.log(this.questions[i].back);
-                    this.cards.push(JSON.parse(JSON.stringify(this.questions[i])));
-                }
-                cnt++;
-            }
-            this.cards = this.shuffle(this.cards);
-            console.log(this.cards);
+            this.initStage();
         },
         watch: {
             cards: {
@@ -254,13 +272,106 @@
                 //---- 配列の中身の要素、変更までは監視してくれない
                 //---- 中身を監視するとき行う処理は handler で書いて、 deep オプションを true にする
                 handler: function() {
-                    localStorage.setItem('questions', JSON.stringify(this.questions));
+                    // localStorage.setItem('questions', JSON.stringify(this.questions));
+                    // this.initStage();
                 },
                 deep: true
             }
         },
         methods: {
-            finishGame: function(){
+            initStage: function(){
+
+              this.is_timer_running = false;
+              this.game_time = 0;
+              clearTimeout(this.game_timer_id);
+
+              this.cards = [];
+              //---- create serial number
+              var cnt = 0;
+
+              // this.questions = JSON.parse(localStorage.getItem('questions')) || [];
+              for(var i=0; i < this.questions.length; i++){
+                  console.log(i);
+                  this.questions[i].serial = cnt;
+                  for(var j=0; j < this.question_sets.length; j++){
+                      this.questions[i].back = this.questions[i].words[this.question_sets[j]];
+                      this.questions[i].lang = this.question_sets[j];
+                      this.questions[i].is_open = false;
+                      this.questions[i].is_done = false;
+                      this.questions[i].is_active = true;
+                      this.questions[i].is_selected = false;
+                      this.customizeCard(i);
+
+                      this.cards.push(JSON.parse(JSON.stringify(this.questions[i])));
+                  } ////---- for
+                  cnt++;
+              }; ////---- for
+              // console.log(this.cards);
+              // this.cards = this.shuffle(this.cards);
+              this.customizeGame();
+            },
+            customizeCard: function(_q_index){
+              switch (this.stage_level) {
+                case 0:
+                  console.log('List mode');
+                  this.questions[_q_index].is_open = true;
+                  break;
+                case 1:
+                  console.log('Open mode');
+                  // this.questions[_q_index].front = this.questions[_q_index].back[0];
+                  this.questions[_q_index].is_open = true;
+                  break;
+                case 2:
+                  console.log('Memory mode');
+                  break;
+                case 3:
+                  console.log('Random Memory mode');
+                  this.questions[_q_index].front = '?';
+                  break;
+                case 4:
+                  console.log('Anki mode');
+                  break;
+                default:
+
+              }
+            },
+            customizeGame: function(){
+              switch (this.stage_level) {
+                case 0:
+                  console.log('List mode');
+                  break;
+                case 1:
+                  console.log('Open mode');
+                  this.cards = this.shuffle(this.cards);
+                  break;
+                case 2:
+                  console.log('Memory mode');
+                  this.cards = this.shuffle(this.cards);
+                  break;
+                case 3:
+                  console.log('Random Memory mode');
+                  this.cards = this.shuffle(this.cards);
+                  break;
+                case 4:
+                  console.log('Anki mode');
+                  break;
+                default:
+
+              }
+            },
+            openStage: function(){
+                this.initStage();
+            },
+            changeStage: function(_index){
+                // this.current_stage = this.stages[_index];
+                this.stage_level = _index;
+                this.openStage();
+            },
+            openNextStage:function(){
+                this.stage_level = this.stage_level+1;
+                this.openStage();
+            },
+            finishStage: function(){
                 // alert('---FIN---');
                 clearTimeout(this.game_timer_id);
                 // this.is_game_completed = true;
@@ -301,30 +412,47 @@
                     this.runTimer();
                 }
 
-                _card.is_open = true;
-                var lang_num = this.question_sets.indexOf(_card.lang);
+                if(_card.is_open === false){
+
+                  _card.is_open = true;
+                }
+
+                _card.is_selected = true;
+                this.speekUp(_card.back[0], _card.lang);
+                if(this.stage_level==1){
+                  this.checkCards();
+                }
+            },
+            speekUp: function(_word,_lang){
+                var lang_num = this.question_sets.indexOf(_lang);
                 var speech = this.speech_apis[lang_num];
-                speech.text = _card.back[0];
+                speech.text = _word;
                 speechSynthesis.speak(speech);
             },
             closeCards: function(){
                 this.flipped_cards.forEach(function(card){
                     card.is_open = false;
+                    card.is_selected = false;
                 });
                 this.resetTrial();
             },
             nextTrial: function(){
                 this.flipped_cards.forEach(function(card){
+                    card.is_selected = false;
                     card.is_done = true;
                 });
                 if(this.is_game_completed){
-                    this.finishGame();
+                    this.finishStage();
                     return;
                 }
             },
             failTrial:function(){
                 this.flipped_cards.forEach(function(card){
-                    card.is_open = false;
+                    if(vm.stage_level != 1){
+                        card.is_open = false;
+                    }
+
+                    card.is_selected = false;
                     card.is_done = false;
                 });
             },
@@ -355,7 +483,7 @@
                 }, 100);
             }
         },
-        
+
     }); ////---- vue object
 
 })();

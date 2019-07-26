@@ -1,16 +1,28 @@
 body {
   font-size: 16px;
   background: #3498db;
+  background: linear-gradient(to left, #28a5f5, #1e87f0);
   font-family: Arial, sans-serif;
   font-weight: bold;
+  margin: 0;
+  padding: 0;
 }
 
+#header{
+  width: 100%;
+  color: #3498db;
+  text-align: center;
+  padding: 30px 0 20px 0;
+  background-color: #fff;
+  font-size: 1.6rem;
+}
 .container {
-  width: 500px;
+  width: 900px;
   margin: 20px auto;
 }
 
-#stage {
+.pannel{
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -19,7 +31,7 @@ body {
 #app h1 {
   font-size: 16px;
   text-align: center;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #ddd;
   padding: 16px 0;
   color: #fff;
 }
@@ -62,7 +74,7 @@ body {
 .card_container {
   /* small value -> big action */
   perspective: 300px;
-  width: 100px;
+  width: 120px;
   height: 150px;
   margin: 5px;
 }
@@ -79,11 +91,6 @@ body {
 
 .card.open {
   transform: rotateY(180deg);
-}
-
-.card_front.done{
-  background: #eee;
-  color: #3498db;
 }
 
 .card:active {
@@ -105,6 +112,22 @@ body {
   backface-visibility: hidden;
 }
 
+.card_front{
+  border: 3px solid #fff;
+  box-sizing: border-box;
+}
+
+.card_front.done{
+  border: 3px solid #ffb7b7;
+  box-sizing: border-box;
+  color: #3498db;
+}
+
+.card_front.selected{
+  border: 3px solid #2ecc71;
+  box-sizing: border-box;
+}
+
 .card_back {
   background: #f1c40f;
   color: #fff;
@@ -122,7 +145,7 @@ body {
 }
 
 .card_front .main_word{
-  padding: 20px 5px;
+  padding: 10px 5px;
 }
 
 .card_front .sub_word{
@@ -137,6 +160,13 @@ body {
   font-weight: normal;
 }
 
+.card_front .flag-icon{
+  margin-top: 10px;
+}
+
+.card_back .flag-icon{
+  margin-top: 10px;
+}
 
 #game_time {
   font-size: 20px;
@@ -146,7 +176,8 @@ body {
   text-align: center;
 }
 
-#restart {
+#restart_btn,
+#next_btn{
   text-decoration: none;
   display: block;
   background: #2ecc71;
@@ -160,12 +191,34 @@ body {
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
 }
 
-#restart.inactive {
+#restart_btn.inactive {
   cursor: default;
   opacity: 0.7;
   background: #555;
   /* box-shadow: none; */
   /* margin-top: 20px; */
+}
+
+#stage_btns{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.stage_btn{
+  width: 150px;
+  margin: 5px;
+  text-decoration: none;
+  display: block;
+  background: #2ecc71;
+  color: #fff;
+  height: 40px;
+  border-radius: 20px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 12px;
+  margin-top: 15px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 #debug_monitor{
