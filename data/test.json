@@ -1,0 +1,49 @@
+[{
+    "title": "test1",
+    "words": {
+        "en": ["run"],
+        "ja": ["はしる", "走る", "hashiru"],
+        "de": ["rennen", "renne", "rennst", "rennt"],
+        "fi": ["juosta", "juoksen", "juokset", "jouksi"]
+    }
+}, {
+    "title": "test2",
+    "words": {
+        "en": ["eat"],
+        "ja": ["たべる", "食べる", "taberu"],
+        "de": ["essen", "esse", "isst", "ißt/isst"],
+        "fi": ["syödä", "syön", "syöt", "syö"]
+    }
+}, {
+    "title": "test3",
+    "words": {
+        "en": ["sleep"],
+        "ja": ["ねむる", "眠る", "nemuru"],
+        "de": ["schlafen", "schlafe", "schläfst", "schläft"],
+        "fi": ["nukkua", "nukun", "nukut", "nukkuu"]
+    }
+}, {
+    "title": "test4",
+    "words": {
+        "en": ["come"],
+        "ja": ["くる", "来る", "kuru"],
+        "de": ["kommen", "komme", "kommst", "kommt"],
+        "fi": ["tulla", "tule", "tulet", "tulee"]
+    }
+}, {
+    "title": "test5",
+    "words": {
+        "en": ["say"],
+        "ja": ["いう", "言う", "iu"],
+        "de": ["sagen", "sage", "sagst", "sagt"],
+        "fi": ["sanoa", "sanon", "sanot", "sanoo"]
+    }
+}, {
+    "title": "test6",
+    "words": {
+        "en": ["know"],
+        "ja": ["しる", "知る", "shiru"],
+        "de": ["wissen", "weiß", "weißt", "weiß"],
+        "fi": ["tietää", "tiedän", "tiedät", "tietää"]
+    }
+}]

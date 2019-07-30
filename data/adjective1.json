@@ -1,0 +1,55 @@
+[{
+    "title": "test1",
+    "words": {
+        "en": ["young"],
+        "ja": ["わかい", "若い", "wakai"],
+        "de": ["jung"],
+        "fi": ["nuori"],
+        "fr": ["Jeune"]
+    }
+}, {
+    "title": "test2",
+    "words": {
+        "en": ["wrong"],
+        "ja": ["まちがった", "間違った", "machigatta"],
+        "de": ["falsch"],
+        "fi": ["väärin"],
+        "fr": ["mal"]
+    }
+}, {
+    "title": "test3",
+    "words": {
+        "en": ["weak"],
+        "ja": ["よわい", "弱い", "yowai"],
+        "de": ["schwach"],
+        "fi": ["heikko"],
+        "fr": ["faible"]
+    }
+}, {
+    "title": "test4",
+    "words": {
+        "en": ["soft"],
+        "ja": ["やわらかい", "柔らかい", "yawarakai"],
+        "de": ["weich"],
+        "fi": ["pehmeä"],
+        "fr": ["doux","douce"]
+    }
+}, {
+    "title": "test5",
+    "words": {
+        "en": ["light"],
+        "ja": ["かるい", "軽い", "karui"],
+        "de": ["leicht"],
+        "fi": ["valo"],
+        "fr": ["lumière"]
+    }
+}, {
+    "title": "test6",
+    "words": {
+        "en": ["right"],
+        "ja": ["ただしい", "正しい", "tadashii"],
+        "de": ["recht"],
+        "fi": ["oikea"],
+        "fr": ["juste"]
+    }
+}]
