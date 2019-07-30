@@ -8,14 +8,22 @@ body {
   padding: 0;
 }
 
+.uitool_a{
+    height: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+}
+
 #header{
   width: 100%;
   color: #3498db;
   text-align: center;
   padding: 30px 0 20px 0;
   background-color: #fff;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
 }
+
 .container {
   width: 900px;
   margin: 20px auto;
@@ -28,8 +36,12 @@ body {
   justify-content: center;
 }
 
+#header #logo{
+    font-size: 1.5rem;
+}
+
 #app h1 {
-  font-size: 16px;
+  font-size: 1.3rem;
   text-align: center;
   border-bottom: 2px solid #ddd;
   padding: 16px 0;
@@ -79,7 +91,7 @@ body {
   margin: 5px;
 }
 
-.card {
+.word_card {
   cursor: pointer;
   width: 100%;
   height: 100%;
@@ -89,11 +101,11 @@ body {
   transform-style: preserve-3d;
 }
 
-.card.open {
+.word_card.open {
   transform: rotateY(180deg);
 }
 
-.card:active {
+.word_card:active {
   /* 回転させる */
   transform: rotateY(180deg);
 }
@@ -139,7 +151,7 @@ body {
 .card_back {
   background: #f1c40f;
   color: #fff;
-  font-size: 20px;
+  font-size: 1.2rem;
 }
 
 .inactive .card_back{
@@ -168,7 +180,7 @@ body {
   color: #555;
   background: #EEE;
   line-height: normal;
-  font-size: 12px;
+  font-size: 0.7rem;
   font-weight: normal;
 }
 
@@ -186,15 +198,14 @@ body {
 }
 
 #game_time {
-  font-size: 20px;
+  font-size: 1.4rem;
   color: #fff;
   text-align: right;
-  margin: 0 5px 10px 0;
+  margin: 5px 0 0 0;
   text-align: center;
 }
 
-#restart_btn,
-#next_btn{
+#restart_btn{
   text-decoration: none;
   display: block;
   background: #2ecc71;
@@ -203,7 +214,6 @@ body {
   border-radius: 20px;
   line-height: 40px;
   text-align: center;
-  font-size: 18px;
   margin-top: 15px;
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
 }
@@ -216,11 +226,16 @@ body {
   /* margin-top: 20px; */
 }
 
+.stage_container{
+    margin-top: 20px;
+}
+
 #stage_btns{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
+
 
 .stage_btn{
   width: 150px;
@@ -233,13 +248,13 @@ body {
   border-radius: 20px;
   line-height: 40px;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.8rem;
   margin-top: 15px;
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 #debug_monitor{
-  font-size: 12px;
+  font-size: 0.9rem;
   padding: 10px;
   margin-top: 20px;
   background: #fff;
@@ -247,4 +262,38 @@ body {
 
 #debug_monitor p{
   text-align: center;
+}
+
+#player_pannel{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.player{
+    text-align: center;
+    padding: 5px 20px;
+}
+
+.player .player_btn{
+    text-decoration: none;
+    display: block;
+    background: #2ecc71;
+    color: #fff;
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    line-height: 40px;
+    text-align: center;
+    margin-top: 5px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.player .player_btn.turn{
+    background: #ede74c;
+}
+
+.player .score{
+    color: #fff;
+    margin-top: 10px;
 }

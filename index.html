@@ -7,15 +7,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/2.9.0/css/flag-icon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 
 </head>
 <body>
-    <div id="header">TANGO</div>
+    <!-- <div id="header">
+        <h1 id="logo">TANGO</h1>
+    </div> -->
 
     <div id="app" class="container">
+        <div id="app_contral_panel">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary uitool_a" data-toggle="modal" data-target="#app_setting_modal">
+              App Setting
+            </button>
+            <setting_component :questions="questions"
+            @change="changeSetting"></setting_component>
+        </div>
+
         <h1>{{ title.toUpperCase() }}</h1>
         <!-- <h2>{{ stage.toUpperCase() }}</h2> -->
 
@@ -25,15 +36,22 @@
           </template>
         </div>
 
-        <div id="restart_btn" :class="{ inactive:game_time==0 }" @click="resetStage()" > RESTART </div>
+        <div id="restart_btn" :class="{ inactive:game_time==0 }" @click="initStage()" > RESTART </div>
+        <div id="game_time" v-show="stage_level==1">{{game_time}}</div>
+
+        <div id="player_pannel" v-show="stage_level!=0">
+          <template v-for="(player, index) in players">
+            <player_component :index="index" :lang="player.lang" :score="player.score" :is_turn="player.is_turn"
+            @clicked="togglePlayer"></player_component>
+          </template>
+        </div>
 
         <!-- <span class="info">{{ remaining.length }}/{{ cards.length }}</span> -->
         <!-- <button @click="purge">Purge</button> -->
         <!-- <p>
         <input type="text" v-model="title">
       </p> -->
-        <div class="container">
-            <div id="game_time">{{game_time}}</div>
+        <div class="stage_container">
             <div id="stage" v-if="stage_level!=3" >
                 <template v-for="(q, index) in question_sets">
                     <!-- <div>  {{ q.toUpperCase() }} </div> -->
@@ -86,7 +104,7 @@
 
     <script type="text/x-template" id="card_component">
         <div class="card_container">
-            <div class="card" :class="{'open':is_open, inactive:!is_active }" @click="clickCard()" @transitionend="cardFlipped()">
+            <div class="word_card" :class="{'open':is_open, inactive:!is_active }" @click="clickCard()" @transitionend="cardFlipped()">
                 <div class="card_front" :class="{done:is_done, selected:is_selected }">
                     <i class="flag-icon" :class="{[flag_name]:true}"></i>
                     <template v-for="(word, index) in back">
@@ -115,6 +133,54 @@
         </div>
     </script>
 
+    <script type="text/x-template" id="setting_component">
+        <!-- Modal -->
+        <div class="modal fade" id="app_setting_modal" tabindex="-1" role="dialog" aria-labelledby="app_setting_modal_title" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="app_setting_modal_title">App Setting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <form name="myform">
+                      <div class="form-group">
+                          <label for="upload_game_data">Upload Game Data</label>
+                          <input id="game_file_input" type="file" class="form-control-file"
+                          @change.prevent="handleFileUpload" />
+                      </div>
+                      <div class="form-group">
+                          <label for="question_num">Total Questions</label>
+                          <select class="form-control" id="exampleFormControlSelect1">
+                              <template v-for="(q, index) in questions">
+                                  <template v-if="questions.length < index">
+                                      <option>{{ index+1 }}</option>
+                                  </template>
+                                  <template v-else>
+                                      <option selected="selected">{{ index+1 }}</option>
+                                  </template>
+                              </template>
+                          </select>
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                <button id="close_modal_btn" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @click="submit">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="player_component">
+        <div class="player">
+            <div class="player_btn" :class="{turn:is_turn}" @click="clickBtn">{{ lang.toUpperCase() }}</div>
+            <div class="score">{{ score }}</div>
+        </div>
+    </script>
     <!-- <script type="text/x-template" id="word-component"> -->
         <!-- <div class="word-container"> -->
         <!-- <div class="word"> -->
@@ -134,12 +200,14 @@
       <!-- </div> -->
     <!-- </script> -->
 
-    <!-- Optional JavaScript -->
+    <!-- Optional JavaScript for Bootstrap -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
 
+    <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="js/main.js"></script>
 

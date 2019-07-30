@@ -6,7 +6,65 @@
     //---- Components
     //-------------------------------------------------------------------//
 
-    var likeComponent = Vue.extend({
+    const settingComponent = Vue.extend({
+        data: function() {
+            return {
+                upload_file:'',
+                textarea_text:'',
+                question_num: 6
+            }
+        },
+        props: {
+            // textarea_text:''
+            questions:[]
+        },
+        template: '#setting_component',
+        methods: {
+            updateValue: function(e){
+                // this.textarea_text = reader.result;
+                this.$emit("input", e.target.value);
+            },
+            handleFileUpload: function(e){
+                let files = e.target.files;
+                this.upload_file = files[0];
+                let reader = new FileReader();
+                reader.readAsText(this.upload_file);
+                reader.addEventListener('load', function() {
+                    // this.textarea_text = reader.result;
+                    localStorage.setItem('questions', reader.result);
+                    console.log(JSON.parse(reader.result));
+                    // $('#close_modal_btn').click();
+                });
+            },
+            submit: function() {
+                alert('submit');
+                this.question_num = 6;
+                let new_values ={
+                    question_num: this.question_num
+                }
+                this.$emit('change', new_values);
+                $('#close_modal_btn').click();
+                // // FormData を利用して File を POST する
+                // let formData = new FormData();
+                // formData.append('yourFileKey', this.upload_file);
+                // let config = {
+                //     headers: {
+                //         'content-type': 'multipart/form-data'
+                //     }
+                // };
+                // axios
+                //     .post('yourUploadUrl', formData, config)
+                //     .then(function(response) {
+                //         // response 処理
+                //     })
+                //     .catch(function(error) {
+                //         // error 処理
+                //     })
+            },
+        }
+    });
+
+    const likeComponent = Vue.extend({
      //---- Componentのdata は、関数で返しさなければならない
         data: function() {
             return {
@@ -25,7 +83,35 @@
         }
     });
 
-    var stageBtnComponent = Vue.extend({
+    const playerComponent = Vue.extend({
+        template: '#player_component',
+        data: function() {
+            return {
+                index: null
+            }
+        },
+        props: {
+            index: null,
+            lang:{
+              type: String,
+              default: ''
+            },
+            is_turn: {
+                type: String,
+                default: false
+            },
+            score:{
+                type: Number
+            }
+        },
+        methods: {
+            clickBtn: function() {
+                this.$emit('clicked');
+            }
+        }
+    });
+
+    const stageBtnComponent = Vue.extend({
         data: function() {
             return {
                 index: null
@@ -47,7 +133,7 @@
     });
 
 
-    var wordComponent = Vue.extend({
+    const wordComponent = Vue.extend({
         template: '#word_component',
         //---- カスタム属性
         props: {
@@ -66,7 +152,7 @@
     });
 
 
-    var cardComponent = Vue.extend({
+    const cardComponent = Vue.extend({
         template: '#card_component',
         data: function() {
             return {
@@ -142,149 +228,111 @@
     //---- Vue Object
     //-------------------------------------------------------------------//
 
-    var vm = new Vue({
+    const vm = new Vue({
         el: '#app',
         components: {
             'like_component': likeComponent,
             'ward_component': wordComponent,
             'stage_btn_component': stageBtnComponent,
-            'card_component': cardComponent
+            'card_component': cardComponent,
+            'setting_component': settingComponent,
+            'player_component': playerComponent,
         },
         data: {
-          title: 'my test',
-          new_item: '',
-          language: 'en',
-          stage_level: 0,
-          stages: ['preparation','open','close','close_random','anki'],
+            title: 'my test',
+            new_item: '',
+            language: 'en',
+            stage_level: 0,
+            stages: ['preparation','open','close','close_random','anki'],
 
-          start_time: null,
-          game_time: 0,
-          is_timer_running: false,
-          timeout_id: 0,
-          game_timer_id: null,
+            start_time: null,
+            game_time: 0,
+            is_timer_running: false,
+            timeout_id: 0,
+            game_timer_id: null,
 
-          is_debug: false,
-          sound_vol: 1,
-          speech_apis:[],
+            is_debug: false,
+            sound_vol: 1,
+            speech_apis:[],
 
-          cards: [],
-          // question_sets:['ja','fi','de'],
-          question_sets:['ja','fi'],
-          questions: [
-                {
-                    title: 'test1',
-                    words: {
-                        en: ['run'],
-                        ja: ['はしる','走る','hashiru'],
-                        de: ['rennen','renne','rennst','rennt'],
-                        fi: ['juosta','juoksen','juokset','jouksi']
-                    }
-                },
-                {
-                    title: 'test2',
-                    words: {
-                        en: ['eat'],
-                        ja: ['たべる','食べる','taberu'],
-                        de:['essen','esse','isst','ißt/isst'],
-                        fi: ['syödä','syön','syöt','syö']
-                    }
-                },
-                {
-                    title: 'test3',
-                    words: {
-                        en: ['sleep'],
-                        ja: ['ねむる','眠る','nemuru'],
-                        de: ['schlafen','schlafe','schläfst','schläft'],
-                        fi: ['nukkua','nukun','nukut','nukkuu']
-                    }
-                },
-                {
-                    title: 'test4',
-                    words: {
-                        en: ['come'],
-                        ja: ['くる','来る','kuru'],
-                        de: ['kommen','komme','kommst','kommt'],
-                        fi: ['tulla','tule','tulet','tulee']
-                    }
-                },
-                {
-                    title: 'test5',
-                    words: {
-                        en: ['say'],
-                        ja: ['いう','言う','iu'],
-                        de: ['sagen','sage','sagst','sagt'],
-                        fi: ['sanoa','sanon','sanot','sanoo']
-                    }
-                },
-                {
-                    title: 'test6',
-                    words: {
-                        en: ['know'],
-                        ja: ['しる','知る','shiru'],
-                        de:['wissen','weiß','weißt','weiß'],
-                        fi: ['tietää','tiedän','tiedät','tietää']
-                    }
-                },
-              ]
+            cards: [],
+            players:[{
+                lang:'ja',
+                score: 0,
+                is_turn: true,
+            },
+            {
+                lang:'fi',
+                score: 0,
+                is_turn: false
+            }],
+            // question_sets:['ja','fi','de'],
+            question_sets:['ja','en','fr'],
+            questions: [],
+            card_src_num: 6,
+
         },
         //データから動的にプロパティ値を計算してくれる算出プロパティ
         computed:{
             completed_cards: function() {
-                var items = this.cards.filter(function(card) {
+                let items = this.cards.filter(function(card) {
                     return card.is_done;
                 });
                 return items;
             },
             flipped_cards: function(){
+                let items =[];
                 if(this.stage_level == 0 || this.stage_level == 1){
-                    var items = this.cards.filter(function(card) {
+                    items = this.cards.filter(function(card) {
                       return card.is_selected;
                     });
                 }else{
-                    var items = this.cards.filter(function(card) {
+                    items = this.cards.filter(function(card) {
                       return card.is_open && !card.is_done;
                     });
                 }
                 return items;
             },
             bingo_cards: function(){
-                var items = this.cards.filter(function(card) {
+                let items = this.cards.filter(function(card) {
                     return card.is_bingo;
                 });
                 return items;
             },
             activated_cards: function(){
+                let items =[];
                 if(this.flipped_cards.length > 0){
-                    if(this.stage_level == 0 || this.stage_level == 4){
-                    //---- the case with existing of selected card
-                    var selected_serial = this.flipped_cards[0].serial;
-                    //---- only selectable the cards with same meaning
-                        var items = this.cards.filter(function(card){
+                    // if(this.stage_level == 0 || this.stage_level == 4){
+                    if(this.stage_level == 4){
+                        //---- the case with existing of selected card
+                        let selected_serial = this.flipped_cards[0].serial;
+                        //---- only selectable the cards with same meaning
+                        items = this.cards.filter(function(card){
                           return card.serial == selected_serial && !card.is_done;
                         });
                     }else if(this.stage_level == 1 || this.stage_level == 2){
-                        var selected_langs = [];
-                        for(var i=0; i < this.flipped_cards.length; i++){
+                        let selected_langs = [];
+                        for(let i=0; i < this.flipped_cards.length; i++){
                             selected_langs.push(this.flipped_cards[i].lang);
                         };
                         //---- only selectable the cards in other languages
-                        var items = this.cards.filter(function(card){
+                        items = this.cards.filter(function(card){
                           return !selected_langs.includes(card.lang) && !card.is_done;
                         });
                     }else{
-                        var items = this.cards.filter(function(card){
+                        items = this.cards.filter(function(card){
                           return !card.is_done;
                         });
                     }
                 }else{
-                    var items = this.cards.filter(function(card){
+                    items = this.cards.filter(function(card){
                       return !card.is_done;
                     });
                 }
                 return items;
             },
             is_success: function(){
-                var answer = this.flipped_cards[0].serial;
+                let answer = this.flipped_cards[0].serial;
                 return this.flipped_cards.every(function(card) {
                     return (card.serial === answer);
                 });
@@ -294,17 +342,29 @@
                     return true;
                 }
                 return false;
-             },
-             current_stage: function(){
+            },
+            current_stage: function(){
                return this.stages[this.stage_level];
-             }
+            },
+            current_player: function(){
+                let players = this.players.filter(function(player,index) {
+                    return (player.is_turn == true);
+                });
+                return players[0];
+            },
+            waiting_player: function(){
+                let players = this.players.filter(function(player,index) {
+                    return (player.is_turn == false);
+                });
+                return players[0];
+            }
         },
         // Vue.js のインスタンスにはライフサイクルが定義されている
         //mounted : アプリがページにマウントされるタイミングでデータを読み込む
         mounted: function(){
             //---- create voice api object
-            for(var i=0; i < this.question_sets.length; i++){
-                var speech = new SpeechSynthesisUtterance();
+            for(let i=0; i < this.question_sets.length; i++){
+                const speech = new SpeechSynthesisUtterance();
                 speech.lang = `${this.question_sets[i]}-${this.question_sets[i].toUpperCase()}`;
                 speech.rate = 0.8;
                 this.speech_apis.push(speech);
@@ -318,35 +378,52 @@
                 //---- 配列の中身の要素、変更までは監視してくれない
                 //---- 中身を監視するとき行う処理は handler で書いて、 deep オプションを true にする
                 handler: function() {
-                    // localStorage.setItem('questions', JSON.stringify(this.questions));
-                    // this.initStage();
+                    localStorage.setItem('questions', JSON.stringify(this.questions));
+                },
+                deep: true
+            },
+            players:{
+                handler: function () {
+                  console.log('players changed')
                 },
                 deep: true
             }
         },
         methods: {
+            changeSetting: function(_new_values){
+                this.card_src_num = _new_values.question_num;
+                this.initStage();
+            },
             initStage: function(){
                 //--- init timer
                 this.is_timer_running = false;
                 this.game_time = 0;
                 clearTimeout(this.game_timer_id);
                 this.cards = [];
-                var cnt = 0; //---- for create serial number
+                let cnt = 0; //---- for create serial number
 
-                // this.questions = JSON.parse(localStorage.getItem('questions')) || [];
-                for(var i=0; i < this.questions.length; i++){
+                //---- set players
+
+                //---- LOAD JSON
+                // axios.get("./data/test.json").then(response => (this.items = response))
+
+                this.questions = JSON.parse(localStorage.getItem('questions')) || [];
+                this.questions = this.shuffle(this.questions);
+                this.card_srcs = this.questions.slice(0,this.card_src_num);
+
+                for(let i=0; i < this.card_srcs.length; i++){
                     console.log(i);
-                    this.questions[i].serial = cnt;
-                    for(var j=0; j < this.question_sets.length; j++){
-                          this.questions[i].back = this.questions[i].words[this.question_sets[j]];
-                          this.questions[i].lang = this.question_sets[j];
-                          this.questions[i].is_open = false;
-                          this.questions[i].is_done = false;
-                          this.questions[i].is_active = true;
-                          this.questions[i].is_selected = false;
+                    this.card_srcs[i].serial = cnt;
+                    for(let j=0; j < this.question_sets.length; j++){
+                          this.card_srcs[i].back = this.card_srcs[i].words[this.question_sets[j]];
+                          this.card_srcs[i].lang = this.question_sets[j];
+                          this.card_srcs[i].is_open = false;
+                          this.card_srcs[i].is_done = false;
+                          this.card_srcs[i].is_active = true;
+                          this.card_srcs[i].is_selected = false;
                           this.customizeCard(i);
 
-                          this.cards.push(JSON.parse(JSON.stringify(this.questions[i])));
+                          this.cards.push(JSON.parse(JSON.stringify(this.card_srcs[i])));
                     } ////---- for
                     cnt++;
                 }; ////---- for
@@ -421,16 +498,16 @@
                 // this.is_game_completed = true;
             },
             shuffle: function(_arr){
-                var returns =[];
+                let returns =[];
                 while(_arr.length) {
-                    var num = Math.floor(Math.random() * (_arr.length - 1));
-                    var val = _arr.splice(num,1);
+                    let num = Math.floor(Math.random() * (_arr.length - 1));
+                    let val = _arr.splice(num,1);
                     returns.push(val[0]);
                 }
                 return returns;
             },
             addItem: function() {
-                var item = {
+                let item = {
                     title: this.new_item,
                     is_done: false
                 };
@@ -480,8 +557,8 @@
                 });
             },
             speekUp: function(_word,_lang){
-                var lang_num = this.question_sets.indexOf(_lang);
-                var speech = this.speech_apis[lang_num];
+                let lang_num = this.question_sets.indexOf(_lang);
+                let speech = this.speech_apis[lang_num];
                 speech.text = _word;
                 speechSynthesis.speak(speech);
             },
@@ -503,6 +580,12 @@
                 }
                 this.activateCards();
             },
+            togglePlayer: function(){
+                this.players = this.players.map(function(player,index) {
+                    player.is_turn = !player.is_turn;
+                    return player;
+                });
+            },
             failTrial:function(){
                 this.flipped_cards.forEach(function(card){
                     if(vm.stage_level != 0 && vm.stage_level != 1){
@@ -511,21 +594,35 @@
                     card.is_selected = false;
                     card.is_done = false;
                 });
+                this.togglePlayer();
                 this.activateCards();
             },
             checkCards: function(){
+                if(this.stage_level==0){
+                    return;
+                }
                 this.activateCards();
                 if(this.flipped_cards.length <= 1){
                     return;
                 };
                 if(this.is_success){
                     console.log('Success');
-                    this.flipped_cards.forEach(function(card,index){
+
+                    this.flipped_cards.forEach(function(card, index){
                         card.is_bingo = true;
-                        if(index === vm.question_sets.length-1){
-                            vm.nextTrial();
-                        };
                     });
+
+                    if(this.flipped_cards[this.flipped_cards.length-1].lang !== this.waiting_player.lang){
+                        // ---- give point 2
+                        this.current_player.score = this.current_player.score + 2;
+                    }else{
+                        // ---- give point 4
+                        this.current_player.score = this.current_player.score + 4;
+                    }
+
+                    if(this.flipped_cards.length === vm.question_sets.length){
+                        vm.nextTrial();
+                    }
                     //---- TODO: Show Picture
                     //---- TODO: sound Effect
                 }else{
