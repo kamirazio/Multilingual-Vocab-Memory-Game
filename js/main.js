@@ -242,7 +242,7 @@
             title: 'First Example Game',
             new_item: '',
             language: 'en',
-            stage_level: 0,
+            stage_level: 2,
             stages: ['preparation','open','close','close_random','anki'],
 
             start_time: null,
@@ -262,13 +262,64 @@
                 is_turn: true,
             },
             {
-                lang:'fr',
+                lang:'fi',
                 score: 0,
                 is_turn: false
             }],
             // question_sets:['ja','fi','de'],
-            question_sets:['ja','fi'],
+            question_sets:['ja','fi','de'],
             questions: [],
+            sample_data:[
+                {
+                    "title": "test1",
+                    "words": {
+                        "en": ["run"],
+                        "ja": ["はしる", "走る", "hashiru"],
+                        "de": ["rennen", "renne", "rennst", "rennt"],
+                        "fi": ["juosta", "juoksen", "juokset", "jouksi"]
+                    }
+                }, {
+                    "title": "test2",
+                    "words": {
+                        "en": ["eat"],
+                        "ja": ["たべる", "食べる", "taberu"],
+                        "de": ["essen", "esse", "isst", "ißt/isst"],
+                        "fi": ["syödä", "syön", "syöt", "syö"]
+                    }
+                }, {
+                    "title": "test3",
+                    "words": {
+                        "en": ["sleep"],
+                        "ja": ["ねむる", "眠る", "nemuru"],
+                        "de": ["schlafen", "schlafe", "schläfst", "schläft"],
+                        "fi": ["nukkua", "nukun", "nukut", "nukkuu"]
+                    }
+                }, {
+                    "title": "test4",
+                    "words": {
+                        "en": ["come"],
+                        "ja": ["くる", "来る", "kuru"],
+                        "de": ["kommen", "komme", "kommst", "kommt"],
+                        "fi": ["tulla", "tule", "tulet", "tulee"]
+                    }
+                }, {
+                    "title": "test5",
+                    "words": {
+                        "en": ["say"],
+                        "ja": ["いう", "言う", "iu"],
+                        "de": ["sagen", "sage", "sagst", "sagt"],
+                        "fi": ["sanoa", "sanon", "sanot", "sanoo"]
+                    }
+                }, {
+                    "title": "test6",
+                    "words": {
+                        "en": ["know"],
+                        "ja": ["しる", "知る", "shiru"],
+                        "de": ["wissen", "weiß", "weißt", "weiß"],
+                        "fi": ["tietää", "tiedän", "tiedät", "tietää"]
+                    }
+                }
+            ],
             card_src_num: 6,
 
         },
@@ -410,7 +461,14 @@
                 //---- LOAD JSON
                 // axios.get("./data/test.json").then(response => (this.items = response))
 
-                this.questions = JSON.parse(localStorage.getItem('questions')) || [];
+                this.questions = JSON.parse(localStorage.getItem('questions'))||[];
+                if(this.questions.length == 0){
+                    // this.setExampleQuestions().then((data) => {
+                    //     this.questions = data;
+                    // })
+                    localStorage.setItem('questions', JSON.stringify(this.sample_data));
+                    this.questions = JSON.parse(localStorage.getItem('questions'))
+                }
                 this.questions = this.shuffle(this.questions);
                 this.card_srcs = this.questions.slice(0,this.card_src_num);
 
@@ -434,6 +492,13 @@
                 // this.cards = this.shuffle(this.cards);
                 this.customizeGame();
             },
+            // setExampleQuestions: function(){
+            //     return new Promise((resolve) => {
+            //         axios.get("./data/test.json").then(function(response){
+            //             resolve(response);
+            //         })
+            //     })
+            // },
             customizeCard: function(_q_index){
               switch (this.stage_level) {
                 case 0:
