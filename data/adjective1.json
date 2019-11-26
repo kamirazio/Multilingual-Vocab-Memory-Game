@@ -1,11 +1,299 @@
 [{
-    "title": "test1",
+    "title": "test",
+    "words": {
+        "en": ["short"],
+        "ja": ["せがひくい", "背が低い", "sega hikui"],
+        "de": ["kurz"],
+        "fi": ["lyhyt"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["tall"],
+        "ja": ["せがたかい", "背が高い", "sega takai"],
+        "de": ["hoch"],
+        "fi": ["pitkä"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["cheap"],
+        "ja": ["やすい", "安い", "yasui"],
+        "de": ["billig"],
+        "fi": ["halpa"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["expensive"],
+        "ja": ["たかい", "高い", "takai"],
+        "de": ["teuer"],
+        "fi": ["kallis"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["low"],
+        "ja": ["ひくい", "低い", "hikui"],
+        "de": ["niedrig"],
+        "fi": ["matala"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["high"],
+        "ja": ["たかい", "高い", "takai"],
+        "de": ["hoch"],
+        "fi": ["korkea"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["late"],
+        "ja": ["おそい", "遅い", "osoi"],
+        "de": ["spät"],
+        "fi": ["myöhään"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["early"],
+        "ja": ["はやい", "早い", "hayai"],
+        "de": ["früh"],
+        "fi": ["aikaisin"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["slow"],
+        "ja": ["おそい", "遅い", "osoi"],
+        "de": ["langsam"],
+        "fi": ["hidas"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["fast"],
+        "ja": ["はやい", "速い", "hayai"],
+        "de": ["schnell"],
+        "fi": ["nopea"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["difficult"],
+        "ja": ["むずかしい", "難しい", "mizukashii"],
+        "de": ["schwierig"],
+        "fi": ["vaikea"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["soft"],
+        "ja": ["かんたんな", "簡単な", "kantanna"],
+        "de": ["einfach"],
+        "fi": ["helppo"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["soft"],
+        "ja": ["やわらかい", "柔らかい", "yawarakai"],
+        "de": ["weich"],
+        "fi": ["pehmeä"],
+        "fr": ["doux","douce"]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["hard"],
+        "ja": ["かたい", "硬い", "katai"],
+        "de": ["zäh"],
+        "fi": ["kova"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["old"],
+        "ja": ["としをとった", "年をとった", "toshi-wo totta"],
+        "de": ["alt"],
+        "fi": ["vanha"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
     "words": {
         "en": ["young"],
         "ja": ["わかい", "若い", "wakai"],
         "de": ["jung"],
         "fi": ["nuori"],
-        "fr": ["Jeune"]
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["old"],
+        "ja": ["ふるい", "古い", "hurui"],
+        "de": ["alt"],
+        "fi": ["vanha"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["new"],
+        "ja": ["あたらしい", "新しい", "atarashii"],
+        "de": ["neu"],
+        "fi": ["uusi"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["narrow"],
+        "ja": ["せまい", "狭い", "semai"],
+        "de": ["schmal"],
+        "fi": ["kapea"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["wide"],
+        "ja": ["ひろい", "広い", "hiroi"],
+        "de": ["breit"],
+        "fi": ["leveä"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["short"],
+        "ja": ["みじかい", "短い", "mijikai"],
+        "de": ["kurz"],
+        "fi": ["lyhyt"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["long"],
+        "ja": ["ながい", "長い", "nagai"],
+        "de": ["lang"],
+        "fi": ["pitkä"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["thin"],
+        "ja": ["うすい", "薄い", "usui"],
+        "de": ["dünn"],
+        "fi": ["ohut"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["thick"],
+        "ja": ["あつい", "厚い", "atsui"],
+        "de": ["dick"],
+        "fi": ["ohut"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["light"],
+        "ja": ["かるい", "軽い", "karui"],
+        "de": ["licht"],
+        "fi": ["kevyt"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["heavy"],
+        "ja": ["おもい", "重い", "omoi"],
+        "de": ["schwer"],
+        "fi": ["painava"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["small"],
+        "ja": ["ちいさい", "小さい", "chiisai"],
+        "de": ["klein"],
+        "fi": ["pieni"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["big"],
+        "ja": ["おおきい", "大きい", "ookii"],
+        "de": ["groß"],
+        "fi": ["iso"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["too -"],
+        "ja": ["とても -　すぎる", "とても -　すぎる", "totemo - sugiru"],
+        "de": ["zu -"],
+        "fi": ["liian -"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["very -"],
+        "ja": ["とても -", "とても -", "totemo -"],
+        "de": ["sehr -"],
+        "fi": ["oikein -"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["It is -"],
+        "ja": ["それは - です", "それは - です", "sore-wa - desu"],
+        "de": ["Das ist -."],
+        "fi": ["Se on -"],
+        "fr": [""]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["adjectives"],
+        "ja": ["けいようし", "形容詞", "keiyou-shi"],
+        "de": ["Adjektive"],
+        "fi": ["adjektiivit"],
+        "fr": ["adjectifs"]
+    }
+}, {
+    "title": "test",
+    "words": {
+        "en": ["adverve"],
+        "ja": ["ふくし", "副詞", "fuku-shi"],
+        "de": [""],
+        "fi": ["adverbi"],
+        "fr": [""]
     }
 }, {
     "title": "test2",
@@ -25,25 +313,7 @@
         "fi": ["heikko"],
         "fr": ["faible"]
     }
-}, {
-    "title": "test4",
-    "words": {
-        "en": ["soft"],
-        "ja": ["やわらかい", "柔らかい", "yawarakai"],
-        "de": ["weich"],
-        "fi": ["pehmeä"],
-        "fr": ["doux","douce"]
-    }
-}, {
-    "title": "test5",
-    "words": {
-        "en": ["light"],
-        "ja": ["かるい", "軽い", "karui"],
-        "de": ["leicht"],
-        "fi": ["valo"],
-        "fr": ["lumière"]
-    }
-}, {
+},  {
     "title": "test6",
     "words": {
         "en": ["right"],

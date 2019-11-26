@@ -1,11 +1,27 @@
 body {
   font-size: 16px;
-  background: #3498db;
-  background: linear-gradient(to left, #28a5f5, #1e87f0);
+  background: #fff;
+  /* background: linear-gradient(to left, #28a5f5, #1e87f0); */
   font-family: Arial, sans-serif;
   font-weight: bold;
   margin: 0;
   padding: 0;
+}
+
+.bg_pattern{
+  background:
+  -moz-radial-gradient(#eee 10%, transparent 10%),
+  -moz-radial-gradient(#eee 10%, transparent 10%),
+  #ddd;
+  background:
+  -webkit-radial-gradient(#eee 10%, transparent 10%),
+  -webkit-radial-gradient(#eee 10%, transparent 10%),
+  #ddd;
+  background-position: 0 0, 10px 10px;
+
+  -webkit-background-size:20px 20px;
+  -moz-background-size:20px 20px;
+  background-size:20px 20px;
 }
 
 .uitool_a{
@@ -45,7 +61,8 @@ body {
   text-align: center;
   border-bottom: 2px solid #ddd;
   padding: 16px 0;
-  color: #fff;
+  color: #333;
+  font-weight: bold;
 }
 
 
@@ -228,6 +245,9 @@ body {
 
 .stage_container{
     margin-top: 20px;
+    padding: 40px;
+    border-radius: 10px;
+    min-height: 500px;
 }
 
 #stage_btns{
@@ -296,4 +316,10 @@ body {
 .player .score{
     color: #fff;
     margin-top: 10px;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #003580;
+  border-color: #003580;
 }

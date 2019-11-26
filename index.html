@@ -20,7 +20,7 @@
     <div id="app" class="container">
         <div id="app_contral_panel">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary uitool_a" data-toggle="modal" data-target="#app_setting_modal">
+            <button type="button" class="btn btn-primary uitool_a" data-toggle="modal" data-target="#app_setting_modal" style="float: right;">
               App Setting
             </button>
             <setting_component :questions="questions"
@@ -39,7 +39,7 @@
         <div id="restart_btn" :class="{ inactive:game_time==0 }" @click="initStage()" > RESTART </div>
         <div id="game_time" v-show="stage_level==1">{{game_time}}</div>
 
-        <div id="player_pannel" v-show="stage_level!=0">
+        <div id="player_pannel" v-show="stage_level==2 || stage_level==3">
           <template v-for="(player, index) in players">
             <player_component :index="index" :lang="player.lang" :score="player.score" :is_turn="player.is_turn"
             @clicked="togglePlayer"></player_component>
@@ -51,7 +51,7 @@
         <!-- <p>
         <input type="text" v-model="title">
       </p> -->
-        <div class="stage_container">
+        <div class="stage_container bg_pattern">
             <div id="stage" v-if="stage_level!=3" >
                 <template v-for="(q, index) in question_sets">
                     <!-- <div>  {{ q.toUpperCase() }} </div> -->

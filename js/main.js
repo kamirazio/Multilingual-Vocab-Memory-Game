@@ -239,7 +239,7 @@
             'player_component': playerComponent,
         },
         data: {
-            title: 'my test',
+            title: 'First Example Game',
             new_item: '',
             language: 'en',
             stage_level: 0,
@@ -262,12 +262,12 @@
                 is_turn: true,
             },
             {
-                lang:'fi',
+                lang:'fr',
                 score: 0,
                 is_turn: false
             }],
             // question_sets:['ja','fi','de'],
-            question_sets:['ja','en','fr'],
+            question_sets:['ja','fi'],
             questions: [],
             card_src_num: 6,
 
@@ -398,6 +398,9 @@
                 //--- init timer
                 this.is_timer_running = false;
                 this.game_time = 0;
+                this.players.map(function(player){
+                    return player.score = 0;
+                });
                 clearTimeout(this.game_timer_id);
                 this.cards = [];
                 let cnt = 0; //---- for create serial number
